@@ -7,12 +7,30 @@ config.read('config.ini')
 
 # get the settings from the config file
 password_length = int(config['password']['length'])
-allowed_chars = config.get('password', 'allowed_chars', raw=True)
+allowed_char_sets = {
+    'lowercase': string.ascii_lowercase,
+    'uppercase': string.ascii_uppercase,
+    'digits': string.digits,
+    'special': string.punctuation,
+    'alphanumeric': string.ascii_letters + string.digits
+}
 
-def generate_password(length = password_length, allowed_chars = allowed_chars):
+def generate_password(length = password_length, allowed_chars = None):
     """Generates a password of a fixed length using the specified character set"""
+    if allowed_chars is None:
+        allowed_chars = allowed_char_sets['alphanumeric'] + allowed_char_sets['special']
+    else:
+        parsed_chars = []
+        for char_code in allowed_chars.split(','):
+            if char_code in allowed_char_sets:
+                parsed_chars.extend(allowed_char_sets[char_code])
+            else:
+                raise ValueError(f'Invalid character set code: {char_code}')
+        allowed_chars = ''.join(parsed_chars)
+
     password = ''.join(random.choice(allowed_chars) for _ in range(length))
-    return password
+    complexity = len(allowed_chars)
+    return password, complexity
 
 def format_time_to_crack(time_to_crack):
     units = ['years', 'million years', 'billion years', 'trillion years', 'quadrillion years', 
@@ -23,7 +41,7 @@ def format_time_to_crack(time_to_crack):
         time_to_crack /= 1000
         return f'{time_to_crack:.2f} {units[-1]} or more'
 
-def check_strength(password):
+def check_strength(password, complexity):
     """Calculates password strength based on length and complexity. 
     Returns a tuple of score (based on length) and 
     feedback (The length of time needed to guess the password)"""
@@ -45,7 +63,6 @@ def check_strength(password):
     # 10 million guesses per second
 
     guesses_per_second = 10000000
-    complexity = len(allowed_chars)
     time_to_crack = (complexity ** password_length) / guesses_per_second / 3600 / 24 / 365 # in terms of years
     feedback += f'It would take approximately {format_time_to_crack(time_to_crack)} to crack this password using a brute force attack.\n'
 
