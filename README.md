@@ -5,32 +5,63 @@ This command-line interface (CLI) tool generates a random password that meets yo
 ## Installation
 
 1. Clone the repository to your local machine.
-2. Install the required packages: `pip install -r requirements.txt`
-3. Run the tool: `python password_generator.py`
+```
+git clone https://github.com/<username>/<repository-name>.git
+```
+2. Install the required packages using `pip`:
+```
+cd <repository-name>
+pip install -r requirements.txt
+```
+3. Run the tool using the `generator.py` script:
+```
+python generator.py
+```
 
 ## Usage
 
+### Generating a password
+You can generate a password with default settings or customize it using the following arguments:
+
 ```
-usage: generator.py [-h] [--length LENGTH] [--char_set CHAR_SET] [--help_char_sets]
+usage: generator.py [-h] [--length LENGTH] [--char_set CHAR_SET] [--word_list]
 
 Generate a random password.
 
 optional arguments:
   -h, --help            show this help message and exit
   --length LENGTH, -l LENGTH
-                        the length of the generated password
+                        the length of the generated password (default: 16)
   --char_set CHAR_SET, -c CHAR_SET
                         a comma-separated list of character set codes to use when generating the password (e.g. "lowercase, digits")
-  --help_char_sets, -hcs
-                        display the available character sets
+  --word_list, -w       generate password using words from the NLTK corpus
+
 ```
 
-If you do not specify a length using the `--length` argument, the tool will generate a password with the default length specified in `config.ini.`
+By default, the tool generates a password with a length of 16 characters, including lowercase and uppercase letters, digits, and special characters. If you do not specify a length using the --length argument, the tool will use the default length.
+You can specify a custom character set using the --char_set argument. Separate multiple character sets by commas (e.g., --char_set lowercase, digits, special). Available character sets include:
+- `lowercase`: lowercase letters (abcdefghijklmnopqrstuvwxyz)
+- `uppercase`: uppercase letters (ABCDEFGHIJKLMNOPQRSTUVWXYZ)
+- `digits`: digits (0123456789)
+- `special`: special characters (!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)
+- `alphanumeric`: alphanumeric characters (letters and digits)
 
-You can specify a custom character set using the `--char_set` argument. Separate multiple character sets by commas (e.g. `--char_set lowercase, digits`). If you need help with the available character sets, use the `--help_char_sets` argument.
+If you want to generate a password using random words from the NLTK corpus, use the `--word_list` argument.
+
+## Checking password strength
+The tool also calculates the strength of the password and provides feedback on how long it would take to crack the password using a brute force attack. The strength score is based on the length and complexity of the password.
+
+```
+Strength score: <score>
+<feedback>
+```
+
+The feedback includes the estimated time to crack the password, assuming a brute force attack with 10 million guesses per second.
+
+
 ## Configuration
 
-The `config.ini` file allows you to customize the default password length and character set.
+You can customize the default settings for the password length and character set in the `config.ini` file.
 
 ```
 [password]
@@ -39,17 +70,12 @@ allowed_chars = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@
 ```
 
 ## Example Output
+### Generating a password with default settings
 
 ```
-$ python generator.py --length 12 --char_set lowercase, digits
-# output
-u5gyzrm0htoj
+$ python generator.py
+GvI#45an@YrT!rW2
 Strength score: 2
 Password length is good.
-It would take approximately 1.95 million years or more to crack this password using a brute force attack.
+It would take approximately 8.81 quadrillion years or more to crack this password using a brute force attack.
 ```
-
-
-## Contributing
-
-Contributions are welcome! If you find a bug or have a feature request, please submit an issue or pull request.
