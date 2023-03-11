@@ -14,6 +14,8 @@ parser.add_argument('--char_set', '-c', type=str, help='a comma-separated list o
 # add an argument to display available character sets
 parser.add_argument('--help_char_sets', '-hcs', action='store_true', help='display the available character sets')
 
+parser.add_argument('--word_list', '-w', action='store_true', help="generate password using words")
+
 # parse the arguments given by the user
 args = parser.parse_args()
 
@@ -22,7 +24,13 @@ if args.help_char_sets:
     for char_set in allowed_char_sets:
         print(f'{char_set}: {allowed_char_sets[char_set]}')
 else:
-    password, complexity = generate_password(args.length or password_length, args.char_set or None)
+    password_args = {
+        'length': args.length or password_length,
+        'allowed_chars': args.char_set or None,
+        'word_list': args.word_list or False
+    }
+
+    password, complexity = generate_password(**password_args)
     score, feedback = check_strength(password, complexity)
     print(password)
     print(f'Strength score: {score}')
