@@ -58,6 +58,14 @@ Strength score: <score>
 
 The feedback includes the estimated time to crack the password, assuming a brute force attack with 10 million guesses per second.
 
+## Testing
+
+The `test_password_generator.py` file contains unit tests for the password generator functions. To run the tests, use the following command:
+
+```
+python -m unittest test_password_generator.py
+```
+
 
 ## Configuration
 
@@ -79,3 +87,16 @@ Strength score: 2
 Password length is good.
 It would take approximately 8.81 quadrillion years or more to crack this password using a brute force attack.
 ```
+
+## Running the test suite
+To run the test suite, navigate to the root directory of the project and run the following command:
+
+```python -m unittest discover -s . -p "*_test.py"```
+
+This will run all the test cases in the root directory of the project that match the pattern `*_test.py`.
+
+The test suite includes tests for the password generator functions and the `format_time_to_crack` and `check_strength` functions. The tests ensure that the functions behave as expected and provide accurate results.
+
+## Conclusion
+
+The Secure Password Generator CLI is a useful tool for generating secure passwords quickly and easily. With the ability to customize password length and character sets, the tool can meet the specific needs of individual users. The tool also provides feedback on the strength of the password and estimates the time required to crack it, making it a valuable addition to any security-conscious individual's toolkit.
