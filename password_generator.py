@@ -46,17 +46,21 @@ def generate_password_from_chars(length, allowed_chars):
     return password, complexity
 
 def generate_password_from_word_list(length):
-    """Generates a password using random words from the NLTK corpus"""
+    """Generates a password using random titlecased words from the NLTK corpus"""
     words = nltk.corpus.brown.words()
-    num_words = length // 5  # assume each word is about 5 characters long
-    passphrase = ' '.join(random.choice(words) for _ in range(num_words))
-    passphrase = passphrase.title()  # capitalize the first letter of each word
-
-    # insert at least one digit and one special character
-    pos = random.choice([0, len(passphrase)])
-    passphrase = (random.choice(string.digits) if pos == 0 else '') + passphrase + (random.choice(string.digits) if pos == len(passphrase) or not any(char in passphrase for char in string.digits) else '')
-    if not any(char in passphrase for char in string.punctuation):
-        passphrase += random.choice(string.punctuation)
+    
+    # Keep only words with length greater than or equal to the desired length
+    words = [word.title() for word in words if len(word) >= length]
+    
+    # Select random words until the total length exceeds the desired length
+    passphrase = ''
+    while len(passphrase) < length:
+        passphrase += random.choice(words) + ' '
+    
+    # Remove trailing space and add a random number and special character
+    passphrase = passphrase.strip()
+    passphrase += random.choice(['!', '@', '#', '$', '%', '^', '&', '*']) + str(random.randint(0, 9))
+    
     complexity = len(words)
     return passphrase, complexity
 
