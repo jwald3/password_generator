@@ -91,7 +91,9 @@ It would take approximately 8.81 quadrillion years or more to crack this passwor
 ## Running the test suite
 To run the test suite, navigate to the root directory of the project and run the following command:
 
-```python -m unittest discover -s . -p "*_test.py"```
+```
+python -m unittest discover -s . -p "*_test.py"
+```
 
 This will run all the test cases in the root directory of the project that match the pattern `*_test.py`.
 
