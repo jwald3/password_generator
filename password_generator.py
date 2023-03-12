@@ -7,7 +7,7 @@ import math
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-nltk.download('brown')
+# nltk.download('brown')
 
 # get the settings from the config file
 password_length = int(config['password']['length'])
@@ -64,15 +64,23 @@ def generate_password_from_word_list(length):
     complexity = len(words)
     return passphrase, complexity
 
-
 def format_time_to_crack(time_to_crack):
-    units = ['years', 'million years', 'billion years', 'trillion years', 'quadrillion years', 
-             'quintillion years', 'sextillion years', 'septillion years', 'octillion years']
-    for i, unit in enumerate(units):
-        if time_to_crack < 1000:
-            return f'{time_to_crack:.2g} {unit}'
-        time_to_crack /= 1000
-    return f'{time_to_crack:.2g} {units[-1]} or more'
+    if time_to_crack >= 1e15:
+        trillion_years = round(time_to_crack/1e12)
+        if trillion_years < 1000:
+            return f"{trillion_years} trillion years"
+        else:
+            return "999 trillion years or more"
+    elif time_to_crack >= 1e12:
+        return f"{round(time_to_crack/1e12)} trillion years"
+    elif time_to_crack >= 1e9:
+        return f"{round(time_to_crack/1e9)} billion years"
+    elif time_to_crack >= 1e6:
+        return f"{round(time_to_crack/1e6)} million years"
+    elif time_to_crack >= 1e3:
+        return f"{round(time_to_crack/1e3)} thousand years"
+    else:
+        return f"{round(time_to_crack)} year"
 
 def check_strength(password, complexity):
     """Calculates password strength based on length and complexity. 
@@ -83,7 +91,7 @@ def check_strength(password, complexity):
     feedback = ''
     password_length = len(password)
 
-    if password_length < 8:
+    if password_length <= 8:
         feedback += 'Password is too short.\n'
     elif password_length < 12:
         score += 1
